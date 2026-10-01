@@ -1,0 +1,135 @@
+@import url('https://api.fontshare.com/v2/css?f[]=clash-display@400,500&f[]=satoshi@400,500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Clash Display", "Inter", system-ui, sans-serif;
+  --font-sans: "Satoshi", "Inter", system-ui, sans-serif;
+
+  --color-primary: #0870b8;
+  --color-secondary: #00a8c8;
+  --color-highlight: #28a8e0;
+  --color-highlight-light: #50c8e8;
+  --color-ink: #005068;
+  --color-slate: #64748b;
+  --color-surface: #ffffff;
+  --color-subtle: #f4fafc;
+  --color-line: #e2e8f0;
+  --color-danger: #e53e3e;
+
+  --ease-swift: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-ink);
+  background: var(--color-surface);
+  font-weight: 400;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+/* Hide scrollbars until scrolling */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+*:hover {
+  scrollbar-color: #cbd5e1 transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 4px;
+}
+*:hover::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+}
+
+@keyframes hea-fade-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.anim-popover {
+  transform-origin: top;
+  animation: hea-fade-scale 180ms var(--ease-swift);
+}
+
+@keyframes hea-modal-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.anim-modal {
+  animation: hea-modal-in 200ms var(--ease-swift);
+}
+
+@keyframes hea-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.anim-fade {
+  animation: hea-fade 260ms var(--ease-swift);
+}
+
+@keyframes hea-pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.anim-skeleton {
+  animation: hea-pulse 1.4s var(--ease-swift) infinite;
+}
+
+@keyframes hea-think {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.6;
+  }
+  30% {
+    transform: translateY(-4px) scale(1.15);
+    opacity: 1;
+  }
+}
+.anim-think > span {
+  animation: hea-think 1.1s var(--ease-swift) infinite;
+}
+.anim-think > span:nth-child(2) {
+  animation-delay: 0.18s;
+}
+.anim-think > span:nth-child(3) {
+  animation-delay: 0.36s;
+}

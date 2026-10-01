@@ -1,0 +1,170 @@
+export type Product = {
+  sku: string;
+  name: string;
+  category: string;
+  price: number;
+  stock: number;
+  active: boolean;
+  description: string;
+};
+
+export const products: Product[] = [
+  { sku: "QM-CL05", name: "Cloro Granulado 5kg", category: "Químicos", price: 890, stock: 42, active: true, description: "Cloro granulado estabilizado para desinfección de albercas residenciales y comerciales." },
+  { sku: "QM-PH01", name: "pH Plus 1L", category: "Químicos", price: 220, stock: 18, active: true, description: "Incrementador de pH para corregir aguas ácidas y proteger la superficie de la alberca." },
+  { sku: "QM-AL02", name: "Alguicida 2L", category: "Químicos", price: 340, stock: 7, active: true, description: "Alguicida concentrado de acción prolongada contra algas verdes y negras." },
+  { sku: "FL-AR50", name: "Filtro de Arena 50L", category: "Filtración", price: 4200, stock: 5, active: true, description: "Medio filtrante de arena sílica de alta pureza para filtros de tanque." },
+  { sku: "BM-CE1H", name: "Bomba Centrífuga 1HP", category: "Bombas", price: 6800, stock: 0, active: false, description: "Bomba centrífuga autocebante de 1HP para recirculación de agua." },
+];
+
+export const categories = ["Químicos", "Filtración", "Bombas", "Accesorios"];
+
+export type Article = {
+  id: string;
+  title: string;
+  description: string;
+};
+
+export const articles: Article[] = [
+  { id: "a1", title: "Mantenimiento de filtros de arena", description: "Guía paso a paso para el retrolavado y reemplazo del medio filtrante. Incluye frecuencia recomendada según el volumen de la alberca y la carga de uso diaria." },
+  { id: "a2", title: "Ajuste de pH en albercas", description: "Cómo medir y corregir el pH usando pH Plus y reductores. Rango objetivo 7.2–7.6 y su relación con la eficacia del cloro libre residual." },
+  { id: "a3", title: "Eliminación de algas verdes", description: "Protocolo de cloración de choque combinada con alguicida. Cepillado de superficies, filtrado continuo y ajuste de químicos posterior al tratamiento." },
+];
+
+export type Template = {
+  id: string;
+  title: string;
+  body: string;
+  active: boolean;
+};
+
+export const templates: Template[] = [
+  { id: "t1", title: "Dosis de cloro", body: "¿Cuál es la dosis de cloro recomendada para una alberca de 30 m³ con uso residencial?", active: true },
+  { id: "t2", title: "Ajustar pH", body: "El pH está en 7.9, ¿cómo lo corrijo y con qué producto?", active: true },
+  { id: "t3", title: "Algas verdes", body: "La alberca tiene agua verde, ¿qué tratamiento aplico?", active: true },
+  { id: "t4", title: "Filtro lento", body: "El filtro está recirculando muy lento, ¿qué reviso primero?", active: true },
+  { id: "t5", title: "Agua turbia", body: "El agua está turbia pero los químicos están balanceados, ¿qué hago?", active: false },
+];
+
+export type User = {
+  id: string;
+  name: string;
+  email: string;
+  role: "supervisor" | "empleado";
+  active: boolean;
+};
+
+export const users: User[] = [
+  { id: "u1", name: "María Fernández", email: "maria.fernandez@hidroequipos.mx", role: "supervisor", active: true },
+  { id: "u2", name: "Carlos Gómez", email: "carlos.gomez@hidroequipos.mx", role: "empleado", active: true },
+  { id: "u3", name: "Laura Sánchez", email: "laura.sanchez@hidroequipos.mx", role: "empleado", active: false },
+];
+
+export type Conversation = {
+  id: string;
+  title: string;
+  date: string;
+};
+
+export const conversations: Conversation[] = [
+  { id: "c1", title: "Filtro sucio", date: "12/09/2026" },
+  { id: "c2", title: "Cloro", date: "11/09/2026" },
+  { id: "c3", title: "pH bajo", date: "10/09/2026" },
+];
+
+export type ChatMessage = {
+  id: string;
+  role: "user" | "assistant";
+  text: string;
+  time: string;
+  products?: string[];
+};
+
+export const seedMessages: ChatMessage[] = [
+  {
+    id: "m1",
+    role: "user",
+    text: "El agua de la alberca del cliente está turbia y con tono verdoso, ¿qué recomiendo?",
+    time: "09:41",
+  },
+  {
+    id: "m2",
+    role: "assistant",
+    text: "El tono verdoso indica presencia de algas. Aplica una cloración de choque (3× la dosis normal) por la noche, cepilla paredes y piso, y mantén la filtración 24 h continuas. Complementa con alguicida al día siguiente y reajusta el pH a 7.2–7.6.",
+    time: "09:41",
+    products: ["Cloro Granulado 5kg", "Alguicida 2L", "pH Plus 1L"],
+  },
+];
+
+export const conversationMessages: Record<string, ChatMessage[]> = {
+  c1: [
+    { id: "c1-1", role: "user", text: "El filtro de arena está recirculando muy lento, ¿qué reviso primero?", time: "08:15" },
+    {
+      id: "c1-2",
+      role: "assistant",
+      time: "08:15",
+      text: "Un flujo lento suele indicar el medio filtrante saturado. Primero revisa la presión del manómetro: si subió 8–10 psi sobre lo normal, realiza un retrolavado. Si persiste, revisa la canastilla del skimmer y de la bomba por obstrucciones.",
+      products: ["Filtro de Arena 50L"],
+    },
+  ],
+  c2: [
+    { id: "c2-1", role: "user", text: "¿Cuál es la dosis de cloro para una alberca de 30 m³?", time: "10:02" },
+    {
+      id: "c2-2",
+      role: "assistant",
+      time: "10:02",
+      text: "Para 30 m³ y mantener 1–3 ppm de cloro libre, aplica aproximadamente 90–120 g de cloro granulado disuelto, con la bomba en marcha y de preferencia al anochecer. Vuelve a medir a las 2 horas.",
+      products: ["Cloro Granulado 5kg"],
+    },
+  ],
+  c3: [
+    { id: "c3-1", role: "user", text: "El pH está en 6.8, ¿cómo lo subo?", time: "16:44" },
+    {
+      id: "c3-2",
+      role: "assistant",
+      time: "16:44",
+      text: "Un pH de 6.8 es ácido y reduce la vida útil de los equipos. Añade pH Plus de forma gradual, disuelto y con recirculación activa, hasta alcanzar el rango 7.2–7.6. Mide de nuevo tras 4–6 horas antes de dosificar otra vez.",
+      products: ["pH Plus 1L"],
+    },
+  ],
+};
+
+export const quickPrompts = [
+  "Dosis de cloro",
+  "Ajustar pH",
+  "Algas verdes",
+  "Filtro lento",
+  "Agua turbia",
+];
+
+export const topProducts = [
+  { name: "Cloro Granulado 5kg", value: 128 },
+  { name: "pH Plus 1L", value: 96 },
+  { name: "Alguicida 2L", value: 74 },
+  { name: "Filtro de Arena 50L", value: 41 },
+  { name: "Bomba Centrífuga 1HP", value: 22 },
+];
+
+export const failedMessages = [
+  "¿Puedo usar sal de mesa en el clorador salino de la alberca?",
+  "El calentador solar no sube la temperatura más de dos grados en…",
+  "¿Cada cuánto reemplazo la celda del sistema de electrólisis sali…",
+];
+
+export const apiHealth = [
+  { time: "12/09 09:41", ok: true, ms: 320 },
+  { time: "12/09 09:12", ok: true, ms: 288 },
+  { time: "12/09 08:55", ok: false, ms: 5010 },
+  { time: "12/09 08:30", ok: true, ms: 412 },
+  { time: "12/09 08:02", ok: true, ms: 301 },
+];
+
+export const traceProducts = [
+  { name: "Cloro Granulado 5kg", score: 0.94 },
+  { name: "Alguicida 2L", score: 0.81 },
+  { name: "pH Plus 1L", score: 0.62 },
+];
+
+export const traceArticles = [
+  { name: "Eliminación de algas verdes", score: 0.9 },
+  { name: "Ajuste de pH en albercas", score: 0.55 },
+];
