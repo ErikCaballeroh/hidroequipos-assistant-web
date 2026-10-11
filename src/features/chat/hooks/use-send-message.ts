@@ -1,46 +1,47 @@
 "use client";
 
-import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { ApiError } from "@/lib/api/errors";
+import { sendMessage as sendMessageRequest } from "../api/chat";
 import { now } from "../lib/time";
-import type { ChatMessage, ChatResponse } from "../types";
+import { toChatMessage, toSources } from "../mappers";
+import type { ChatMessage } from "../types";
 
-/* Simulated response until the diagnostic engine is integrated (Fase 9). */
-async function sendMessageRequest(text: string): Promise<ChatResponse> {
-  await new Promise((resolve) => setTimeout(resolve, 1400));
-  void text;
-  return {
-    message:
-      "Para una dosificación correcta necesito el volumen de la alberca. Como referencia general: mantén cloro libre entre 1–3 ppm y pH entre 7.2 y 7.6. Aplica el producto disuelto, con la bomba en marcha, preferentemente al anochecer.",
-    sources: [
-      { name: "Cloro Granulado 5kg", type: "product", similarity: 0.88 },
-      { name: "pH Plus 1L", type: "product", similarity: 0.71 },
-    ],
-  };
-}
+type SendVariables = { conversationId: string; text: string };
 
 export function useSendMessage() {
-  const [sending, setSending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  const sendMessage = async (text: string): Promise<ChatMessage | null> => {
-    setSending(true);
-    setError(null);
-    try {
-      const response = await sendMessageRequest(text);
-      return {
+  const mutation = useMutation<ChatMessage, ApiError, SendVariables>({
+    mutationFn: async ({ conversationId, text }) => {
+      const response = await sendMessageRequest(conversationId, text);
+      return toChatMessage(response.message, toSources(response.sources));
+    },
+    onMutate: ({ conversationId, text }) => {
+      const userMessage: ChatMessage = {
         id: crypto.randomUUID(),
-        role: "assistant",
-        text: response.message,
+        role: "user",
+        text,
         time: now(),
-        sources: response.sources,
       };
-    } catch {
-      setError("No se pudo generar una respuesta. Intenta de nuevo.");
-      return null;
-    } finally {
-      setSending(false);
-    }
-  };
+      queryClient.setQueryData<ChatMessage[]>(["messages", conversationId], (prev) => [
+        ...(prev ?? []),
+        userMessage,
+      ]);
+    },
+    onSuccess: (assistantMessage, { conversationId }) => {
+      queryClient.setQueryData<ChatMessage[]>(["messages", conversationId], (prev) => [
+        ...(prev ?? []),
+        assistantMessage,
+      ]);
+      queryClient.invalidateQueries({ queryKey: ["conversations"] });
+    },
+  });
 
-  return { sendMessage, sending, error };
+  return {
+    sendMessage: (conversationId: string, text: string) =>
+      mutation.mutateAsync({ conversationId, text }),
+    sending: mutation.isPending,
+    error: mutation.error?.message ?? null,
+  };
 }

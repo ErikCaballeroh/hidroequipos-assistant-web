@@ -1,7 +1,17 @@
 "use client";
 
-import { conversations } from "../mocks/conversations";
+import { useQuery } from "@tanstack/react-query";
+import { getConversations } from "../api/chat";
+import { toConversation } from "../mappers";
 
 export function useConversations() {
-  return { conversations };
+  const { data, isLoading } = useQuery({
+    queryKey: ["conversations"],
+    queryFn: getConversations,
+  });
+
+  return {
+    conversations: (data ?? []).map(toConversation),
+    isLoading,
+  };
 }
