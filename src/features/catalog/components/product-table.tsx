@@ -9,7 +9,7 @@ export default function ProductTable({
 }: {
   products: Product[];
   onEdit: (product: Product) => void;
-  onToggleActive: (sku: string) => void;
+  onToggleActive: (product: Product) => void;
 }) {
   return (
     <table className="w-full text-sm">
@@ -27,14 +27,14 @@ export default function ProductTable({
       <tbody>
         {products.map((p) => (
           <tr
-            key={p.sku}
+            key={p.id}
             className="border-b border-line transition-colors hover:bg-subtle"
           >
-            <Td className="font-medium text-slate">{p.sku}</Td>
+            <Td className="font-medium text-slate">{p.sku ?? "—"}</Td>
             <Td className="text-ink">{p.name}</Td>
-            <Td className="text-slate">{p.category}</Td>
+            <Td className="text-slate">{p.category ?? "—"}</Td>
             <Td className="text-right tabular-nums text-ink">
-              ${p.price.toLocaleString("es-MX")}
+              {p.price != null ? `$${p.price.toLocaleString("es-MX")}` : "—"}
             </Td>
             <Td className="text-right tabular-nums text-ink">{p.stock}</Td>
             <Td>
@@ -49,7 +49,7 @@ export default function ProductTable({
                 >
                   <Icon name="pencil" size={16} />
                 </button>
-                <Toggle checked={p.active} onChange={() => onToggleActive(p.sku)} />
+                <Toggle checked={p.active} onChange={() => onToggleActive(p)} />
               </div>
             </Td>
           </tr>

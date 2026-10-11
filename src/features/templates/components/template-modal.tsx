@@ -4,18 +4,33 @@ import { useState } from "react";
 import { Button, Field, Input, Modal, Textarea } from "@/components/ui";
 import type { QueryTemplate } from "../types";
 
+export type TemplateFormValues = {
+  title: string;
+  queryText: string;
+};
+
 export default function TemplateModal({
   template,
   onClose,
   onSave,
+  onDelete,
+  loading,
+  deleting,
+  error,
 }: {
   template: QueryTemplate | null;
   onClose: () => void;
-  onSave: (template: QueryTemplate) => void;
+  onSave: (values: TemplateFormValues) => void;
+  onDelete?: () => void;
+  loading: boolean;
+  deleting: boolean;
+  error: string | null;
 }) {
-  const [form, setForm] = useState<QueryTemplate>(
-    template ?? { id: crypto.randomUUID(), title: "", body: "", active: true },
-  );
+  const [form, setForm] = useState<TemplateFormValues>({
+    title: template?.title ?? "",
+    queryText: template?.queryText ?? "",
+  });
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   return (
     <Modal
@@ -24,11 +39,30 @@ export default function TemplateModal({
       width="max-w-lg"
       footer={
         <>
+          {template && onDelete && !confirmingDelete && (
+            <Button
+              variant="danger"
+              className="mr-auto"
+              onClick={() => setConfirmingDelete(true)}
+            >
+              Eliminar
+            </Button>
+          )}
+          {confirmingDelete && (
+            <Button
+              variant="danger"
+              className="mr-auto"
+              onClick={onDelete}
+              disabled={deleting}
+            >
+              {deleting ? "Eliminando..." : "¿Confirmar eliminación?"}
+            </Button>
+          )}
           <Button variant="secondary" onClick={onClose}>
             Cancelar
           </Button>
-          <Button onClick={() => onSave(form)} disabled={!form.title.trim()}>
-            Guardar
+          <Button onClick={() => onSave(form)} disabled={!form.title.trim() || loading}>
+            {loading ? "Guardando..." : "Guardar"}
           </Button>
         </>
       }
@@ -44,11 +78,12 @@ export default function TemplateModal({
         <Field label="Texto precargado">
           <Textarea
             className="min-h-28"
-            value={form.body}
-            onChange={(e) => setForm({ ...form, body: e.target.value })}
+            value={form.queryText}
+            onChange={(e) => setForm({ ...form, queryText: e.target.value })}
             placeholder="¿Cuál es la dosis de cloro recomendada para..."
           />
         </Field>
+        {error && <p className="text-sm text-danger">{error}</p>}
       </div>
     </Modal>
   );

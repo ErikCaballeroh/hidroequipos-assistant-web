@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import PageHeader, { StateSwitch } from "@/components/layout/page-header";
+import PageHeader from "@/components/layout/page-header";
 import { Button, EmptyState, ErrorState, Icon } from "@/components/ui";
 import { TableSkeleton } from "@/components/ui/table";
 import ProductFilters from "@/features/catalog/components/product-filters";
@@ -10,13 +10,20 @@ import ProductTable from "@/features/catalog/components/product-table";
 import { useProducts } from "@/features/catalog/hooks/use-products";
 import type { Product } from "@/features/catalog/types";
 
-type ViewState = "ready" | "loading" | "empty" | "error";
-
 export default function CatalogPage() {
-  const { products, categories, saveProduct, toggleActive } = useProducts();
+  const {
+    products,
+    categories,
+    isLoading,
+    isError,
+    createProduct,
+    updateProduct,
+    isSaving,
+    saveError,
+    toggleActive,
+  } = useProducts();
   const [query, setQuery] = useState("");
   const [cat, setCat] = useState("Todas");
-  const [state, setState] = useState<ViewState>("ready");
   const [editing, setEditing] = useState<Product | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -26,7 +33,7 @@ export default function CatalogPage() {
         (p) =>
           (cat === "Todas" || p.category === cat) &&
           (p.name.toLowerCase().includes(query.toLowerCase()) ||
-            p.sku.toLowerCase().includes(query.toLowerCase())),
+            (p.sku ?? "").toLowerCase().includes(query.toLowerCase())),
       ),
     [products, query, cat],
   );
@@ -45,13 +52,10 @@ export default function CatalogPage() {
       <PageHeader
         title="Catálogo de productos"
         action={
-          <div className="flex items-center gap-3">
-            <StateSwitch value={state} onChange={setState} />
-            <Button onClick={openNew}>
-              <Icon name="plus" size={16} />
-              Nuevo producto
-            </Button>
-          </div>
+          <Button onClick={openNew}>
+            <Icon name="plus" size={16} />
+            Nuevo producto
+          </Button>
         }
       />
 
@@ -64,14 +68,14 @@ export default function CatalogPage() {
       />
 
       <div className="flex-1 overflow-auto px-6 py-4">
-        {state === "loading" ? (
+        {isLoading ? (
           <TableSkeleton cols={7} />
-        ) : state === "error" ? (
+        ) : isError ? (
           <ErrorState
             title="No se pudo cargar el catálogo."
-            onRetry={() => setState("ready")}
+            onRetry={() => window.location.reload()}
           />
-        ) : state === "empty" || filtered.length === 0 ? (
+        ) : filtered.length === 0 ? (
           <EmptyState
             title="No hay productos en el catálogo. Crea uno nuevo."
             action={
@@ -82,11 +86,7 @@ export default function CatalogPage() {
             }
           />
         ) : (
-          <ProductTable
-            products={filtered}
-            onEdit={openEdit}
-            onToggleActive={toggleActive}
-          />
+          <ProductTable products={filtered} onEdit={openEdit} onToggleActive={toggleActive} />
         )}
       </div>
 
@@ -94,10 +94,20 @@ export default function CatalogPage() {
         <ProductModal
           product={editing}
           categories={categories}
+          loading={isSaving}
+          error={saveError}
           onClose={() => setModalOpen(false)}
-          onSave={(p) => {
-            saveProduct(p);
-            setModalOpen(false);
+          onSave={async (values) => {
+            try {
+              if (editing) {
+                await updateProduct(editing.id, values);
+              } else {
+                await createProduct(values);
+              }
+              setModalOpen(false);
+            } catch {
+              // the error message is already surfaced via saveError
+            }
           }}
         />
       )}
