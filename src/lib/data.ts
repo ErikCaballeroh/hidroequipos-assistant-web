@@ -30,35 +30,6 @@ export const articles: Article[] = [
   { id: "a3", title: "Eliminación de algas verdes", description: "Protocolo de cloración de choque combinada con alguicida. Cepillado de superficies, filtrado continuo y ajuste de químicos posterior al tratamiento." },
 ];
 
-export type Template = {
-  id: string;
-  title: string;
-  body: string;
-  active: boolean;
-};
-
-export const templates: Template[] = [
-  { id: "t1", title: "Dosis de cloro", body: "¿Cuál es la dosis de cloro recomendada para una alberca de 30 m³ con uso residencial?", active: true },
-  { id: "t2", title: "Ajustar pH", body: "El pH está en 7.9, ¿cómo lo corrijo y con qué producto?", active: true },
-  { id: "t3", title: "Algas verdes", body: "La alberca tiene agua verde, ¿qué tratamiento aplico?", active: true },
-  { id: "t4", title: "Filtro lento", body: "El filtro está recirculando muy lento, ¿qué reviso primero?", active: true },
-  { id: "t5", title: "Agua turbia", body: "El agua está turbia pero los químicos están balanceados, ¿qué hago?", active: false },
-];
-
-export type User = {
-  id: string;
-  name: string;
-  email: string;
-  role: "supervisor" | "empleado";
-  active: boolean;
-};
-
-export const users: User[] = [
-  { id: "u1", name: "María Fernández", email: "maria.fernandez@hidroequipos.mx", role: "supervisor", active: true },
-  { id: "u2", name: "Carlos Gómez", email: "carlos.gomez@hidroequipos.mx", role: "empleado", active: true },
-  { id: "u3", name: "Laura Sánchez", email: "laura.sanchez@hidroequipos.mx", role: "empleado", active: false },
-];
-
 export type Conversation = {
   id: string;
   title: string;
