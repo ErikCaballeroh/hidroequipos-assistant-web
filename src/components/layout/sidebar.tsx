@@ -1,23 +1,31 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { DropLogo, Icon } from "../ui";
 
-const nav: { href: string; label: string; icon: string; group: string }[] = [
+type Role = "employee" | "supervisor";
+
+const nav: { href: string; label: string; icon: string; group: string; supervisorOnly?: boolean }[] = [
   { href: "/", label: "Chat", icon: "chat", group: "Asistente" },
-  { href: "/admin/products", label: "Catálogo", icon: "box", group: "Catálogo" },
-  { href: "/admin/knowledge-base", label: "Base de conocimiento", icon: "book", group: "Catálogo" },
-  { href: "/admin/query-templates", label: "Plantillas rápidas", icon: "layout", group: "Gestión" },
-  { href: "/admin/users", label: "Usuarios", icon: "users", group: "Gestión" },
-  { href: "/admin/metrics", label: "Métricas", icon: "chart", group: "Monitoreo" },
-  { href: "/admin/messages", label: "Trazabilidad", icon: "activity", group: "Monitoreo" },
+  { href: "/admin/products", label: "Catálogo", icon: "box", group: "Catálogo", supervisorOnly: true },
+  { href: "/admin/knowledge-base", label: "Base de conocimiento", icon: "book", group: "Catálogo", supervisorOnly: true },
+  { href: "/admin/query-templates", label: "Plantillas rápidas", icon: "layout", group: "Gestión", supervisorOnly: true },
+  { href: "/admin/users", label: "Usuarios", icon: "users", group: "Gestión", supervisorOnly: true },
+  { href: "/admin/metrics", label: "Métricas", icon: "chart", group: "Monitoreo", supervisorOnly: true },
+  { href: "/admin/messages", label: "Trazabilidad", icon: "activity", group: "Monitoreo", supervisorOnly: true },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({
+  user,
+  onLogout,
+}: {
+  user: { name: string; role: Role };
+  onLogout: () => void;
+}) {
   const pathname = usePathname();
-  const router = useRouter();
-  const groups = [...new Set(nav.map((n) => n.group))];
+  const visibleNav = nav.filter((n) => !n.supervisorOnly || user.role === "supervisor");
+  const groups = [...new Set(visibleNav.map((n) => n.group))];
 
   return (
     <nav className="flex flex-col border-r border-line bg-subtle">
@@ -34,7 +42,7 @@ export default function Sidebar() {
             <p className="px-4 pb-1 text-[11px] font-medium uppercase tracking-wide text-slate">
               {g}
             </p>
-            {nav
+            {visibleNav
               .filter((n) => n.group === g)
               .map((n) => {
                 const on = n.href === "/" ? pathname === "/" : pathname.startsWith(n.href);
@@ -67,11 +75,20 @@ export default function Sidebar() {
 
       <div className="border-t border-line p-3">
         <div className="mb-2 px-1">
-          <p className="text-sm text-ink">María Fernández</p>
-          <p className="text-[11px] text-slate">Supervisor</p>
+          <p className="text-sm text-ink">{user.name}</p>
+          <p className="text-[11px] text-slate">
+            {user.role === "supervisor" ? "Supervisor" : "Empleado"}
+          </p>
         </div>
+        <Link
+          href="/change-password"
+          className="flex w-full items-center gap-2 rounded-[4px] px-2 py-1.5 text-sm text-slate transition-colors hover:bg-white hover:text-ink"
+        >
+          <Icon name="pencil" size={16} />
+          Cambiar contraseña
+        </Link>
         <button
-          onClick={() => router.push("/login")}
+          onClick={onLogout}
           className="flex w-full items-center gap-2 rounded-[4px] px-2 py-1.5 text-sm text-slate transition-colors hover:bg-white hover:text-ink"
         >
           <Icon name="logout" size={16} />

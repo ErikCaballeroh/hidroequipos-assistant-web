@@ -1,33 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import type { ApiError } from "@/lib/api/errors";
+import { setToken } from "@/lib/auth/session";
+import { login, type LoginResponse } from "../api/auth";
 import type { LoginCredentials } from "../types";
 
-/* Simulated response until the auth backend is integrated (Fase 7). */
-async function loginRequest({ password }: LoginCredentials): Promise<void> {
-  await new Promise((resolve) => setTimeout(resolve, 400));
-  if (password.length < 4) {
-    throw new Error("Credenciales inválidas");
-  }
-}
-
 export function useLogin() {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const mutation = useMutation<LoginResponse, ApiError, LoginCredentials>({
+    mutationFn: login,
+    onSuccess: (data) => setToken(data.accessToken),
+  });
 
-  const login = async (credentials: LoginCredentials) => {
-    setLoading(true);
-    setError(null);
-    try {
-      await loginRequest(credentials);
-      return true;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Credenciales inválidas");
-      return false;
-    } finally {
-      setLoading(false);
-    }
+  return {
+    login: mutation.mutateAsync,
+    loading: mutation.isPending,
+    error: mutation.error?.message ?? null,
   };
-
-  return { login, loading, error };
 }

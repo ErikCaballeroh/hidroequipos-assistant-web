@@ -14,12 +14,20 @@ apiClient.interceptors.request.use((config) => {
   return config;
 });
 
+// 401s from these endpoints are expected, user-facing validation failures
+// (bad credentials / wrong current password), not an expired session — the
+// calling form shows the message instead of the global session-expiry redirect.
+const AUTH_ENDPOINTS_WITH_OWN_ERROR_HANDLING = ["/auth/login", "/auth/change-password"];
+
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     const apiError = toApiError(error);
+    const isOwnErrorHandling = AUTH_ENDPOINTS_WITH_OWN_ERROR_HANDLING.some((url) =>
+      error.config?.url?.includes(url),
+    );
 
-    if (apiError.status === 401) {
+    if (apiError.status === 401 && !isOwnErrorHandling) {
       clearToken();
       if (typeof window !== "undefined") {
         // Hard redirect: this runs outside the React tree (axios interceptor), so
