@@ -60,6 +60,7 @@ function Chat() {
           thinking={sending}
           error={error}
           loading={loadingMessages}
+          conversationId={activeConv}
         />
         <MessageInput value={draft} onChange={setDraft} onSubmit={() => send(draft)} />
       </div>

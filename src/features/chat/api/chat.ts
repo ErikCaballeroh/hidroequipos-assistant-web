@@ -4,8 +4,10 @@ import type { components } from "@/lib/api/schema";
 export type ApiConversation = components["schemas"]["ConversationEntity"];
 export type ApiMessage = components["schemas"]["MessageEntity"];
 export type ApiQueryTemplate = components["schemas"]["QueryTemplateEntity"];
+export type ApiFeedback = components["schemas"]["FeedbackEntity"];
 type SendMessageResponse = components["schemas"]["SendMessageResponseEntity"];
 type QueryTemplatePage = components["schemas"]["QueryTemplatePageEntity"];
+type CreateFeedbackDto = components["schemas"]["CreateFeedbackDto"];
 
 export async function getConversations(): Promise<ApiConversation[]> {
   const { data } = await apiClient.get<ApiConversation[]>("/conversations");
@@ -38,4 +40,16 @@ export async function getQueryTemplates(): Promise<ApiQueryTemplate[]> {
     params: { page: 1, pageSize: 50 },
   });
   return data.items;
+}
+
+export async function giveFeedback(
+  messageId: string,
+  dto: CreateFeedbackDto,
+): Promise<ApiFeedback> {
+  const { data } = await apiClient.post<ApiFeedback>(`/messages/${messageId}/feedback`, dto);
+  return data;
+}
+
+export async function removeFeedback(messageId: string): Promise<void> {
+  await apiClient.delete(`/messages/${messageId}/feedback`);
 }
