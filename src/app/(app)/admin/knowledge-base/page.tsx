@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import PageHeader from "@/components/PageHeader";
+import PageHeader from "@/components/layout/page-header";
 import { Button, Field, Icon, Input, Modal, Textarea } from "@/components/ui";
 import { articles as seed, type Article } from "@/lib/data";
 

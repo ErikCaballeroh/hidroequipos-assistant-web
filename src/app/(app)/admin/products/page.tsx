@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import PageHeader, { StateSwitch } from "@/components/PageHeader";
+import PageHeader, { StateSwitch } from "@/components/layout/page-header";
 import {
   Button,
   EmptyState,
@@ -15,7 +15,7 @@ import {
   Textarea,
   Toggle,
 } from "@/components/ui";
-import { Td, Th, TableSkeleton } from "@/components/table";
+import { Td, Th, TableSkeleton } from "@/components/ui/table";
 import { categories, products as seed, type Product } from "@/lib/data";
 
 type ViewState = "ready" | "loading" | "empty" | "error";

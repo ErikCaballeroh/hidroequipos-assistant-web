@@ -2,7 +2,7 @@
 
 import { use } from "react";
 import { useRouter } from "next/navigation";
-import PageHeader from "@/components/PageHeader";
+import PageHeader from "@/components/layout/page-header";
 import { Button, Icon } from "@/components/ui";
 import { seedMessages, traceArticles, traceProducts } from "@/lib/data";
 

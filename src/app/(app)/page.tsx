@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Shell from "@/components/Shell";
 import { Button, Chip, DropLogo, Icon, Input } from "@/components/ui";
 import {
   conversationMessages,
@@ -243,9 +242,5 @@ function Chat() {
 }
 
 export default function Home() {
-  return (
-    <Shell>
-      <Chat />
-    </Shell>
-  );
+  return <Chat />;
 }

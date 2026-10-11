@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Skeleton } from "./ui";
+import { Skeleton } from "./index";
 
 /* Shared table cells, originally defined alongside the catalog screen. */
 export function Th({
