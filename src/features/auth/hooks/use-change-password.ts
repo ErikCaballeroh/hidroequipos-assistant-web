@@ -1,25 +1,18 @@
 "use client";
 
-import { useState } from "react";
-
-/* Simulated response until the auth backend is integrated (Fase 7). */
-async function changePasswordRequest(password: string): Promise<void> {
-  await new Promise((resolve) => setTimeout(resolve, 400));
-  void password;
-}
+import { useMutation } from "@tanstack/react-query";
+import type { ApiError } from "@/lib/api/errors";
+import { changePassword } from "../api/auth";
+import type { ChangePasswordInput } from "../types";
 
 export function useChangePassword() {
-  const [loading, setLoading] = useState(false);
+  const mutation = useMutation<void, ApiError, ChangePasswordInput>({
+    mutationFn: changePassword,
+  });
 
-  const changePassword = async (password: string) => {
-    setLoading(true);
-    try {
-      await changePasswordRequest(password);
-      return true;
-    } finally {
-      setLoading(false);
-    }
+  return {
+    changePassword: mutation.mutateAsync,
+    loading: mutation.isPending,
+    error: mutation.error?.message ?? null,
   };
-
-  return { changePassword, loading };
 }
