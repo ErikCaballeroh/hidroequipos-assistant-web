@@ -11,11 +11,13 @@ export default function MessageList({
   thinking,
   error,
   loading,
+  conversationId,
 }: {
   messages: ChatMessage[];
   thinking: boolean;
   error?: string | null;
   loading?: boolean;
+  conversationId: string | null;
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -51,7 +53,7 @@ export default function MessageList({
       ) : (
         <div className="mx-auto flex max-w-3xl flex-col gap-5">
           {messages.map((m) => (
-            <MessageBubble key={m.id} message={m} />
+            <MessageBubble key={m.id} message={m} conversationId={conversationId} />
           ))}
           {thinking && (
             <div className="flex flex-col items-start">

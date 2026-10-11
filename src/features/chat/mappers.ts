@@ -37,6 +37,7 @@ export function toChatMessage(m: ApiMessage, sources?: ChatSource[]): ChatMessag
     text: m.content,
     time: formatTime(m.createdAt),
     sources,
+    feedback: m.feedback ? { type: m.feedback.type, comment: m.feedback.comment } : null,
   };
 }
 

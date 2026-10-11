@@ -4,12 +4,18 @@ export type ChatSource = {
   similarity: number;
 };
 
+export type MessageFeedback = {
+  type: "like" | "dislike";
+  comment: string | null;
+};
+
 export type ChatMessage = {
   id: string;
   role: "user" | "assistant";
   text: string;
   time: string;
   sources?: ChatSource[];
+  feedback?: MessageFeedback | null;
 };
 
 export type Conversation = {

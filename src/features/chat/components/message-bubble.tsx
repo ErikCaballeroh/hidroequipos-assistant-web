@@ -1,8 +1,15 @@
 import ReactMarkdown from "react-markdown";
+import FeedbackButtons from "./feedback-buttons";
 import SourceChips from "./source-chips";
 import type { ChatMessage } from "../types";
 
-export default function MessageBubble({ message }: { message: ChatMessage }) {
+export default function MessageBubble({
+  message,
+  conversationId,
+}: {
+  message: ChatMessage;
+  conversationId: string | null;
+}) {
   if (message.role === "user") {
     return (
       <div className="flex flex-col items-end">
@@ -21,6 +28,13 @@ export default function MessageBubble({ message }: { message: ChatMessage }) {
           <ReactMarkdown>{message.text}</ReactMarkdown>
         </div>
         {message.sources && <SourceChips sources={message.sources} />}
+        {conversationId && (
+          <FeedbackButtons
+            conversationId={conversationId}
+            messageId={message.id}
+            feedback={message.feedback}
+          />
+        )}
       </div>
       <span className="mt-1 text-[11px] text-slate">{message.time}</span>
     </div>
