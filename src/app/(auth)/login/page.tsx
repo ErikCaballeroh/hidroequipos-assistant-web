@@ -10,8 +10,12 @@ export default function LoginPage() {
   const { login, loading, error } = useLogin();
 
   const handleSubmit = async (credentials: LoginCredentials) => {
-    const ok = await login(credentials);
-    if (ok) router.push("/change-password");
+    try {
+      const result = await login(credentials);
+      router.push(result.mustChangePassword ? "/change-password" : "/");
+    } catch {
+      // the failed-login message is already surfaced via the hook's `error`
+    }
   };
 
   return <LoginForm onSubmit={handleSubmit} loading={loading} error={error} />;
