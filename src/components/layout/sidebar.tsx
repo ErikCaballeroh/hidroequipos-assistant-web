@@ -11,7 +11,7 @@ const nav: { href: string; label: string; icon: string; group: string }[] = [
   { href: "/admin/query-templates", label: "Plantillas rápidas", icon: "layout", group: "Gestión" },
   { href: "/admin/users", label: "Usuarios", icon: "users", group: "Gestión" },
   { href: "/admin/metrics", label: "Métricas", icon: "chart", group: "Monitoreo" },
-  { href: "/admin/messages/m1", label: "Trazabilidad", icon: "activity", group: "Monitoreo" },
+  { href: "/admin/messages", label: "Trazabilidad", icon: "activity", group: "Monitoreo" },
 ];
 
 export default function Sidebar() {
