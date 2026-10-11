@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "api:sync": "node --env-file-if-exists=.env.local --env-file-if-exists=.env scripts/sync-openapi.mjs && openapi-typescript openapi/openapi.json -o src/lib/api/schema.d.ts"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.104.1",
