@@ -1,7 +1,14 @@
 "use client";
 
-import { templates } from "../mocks/templates";
+import { useQuery } from "@tanstack/react-query";
+import { getQueryTemplates } from "../api/chat";
+import { toQueryTemplate } from "../mappers";
 
 export function useQueryTemplates() {
-  return { templates: templates.filter((t) => t.active) };
+  const { data } = useQuery({
+    queryKey: ["query-templates"],
+    queryFn: getQueryTemplates,
+  });
+
+  return { templates: (data ?? []).map(toQueryTemplate).filter((t) => t.active) };
 }

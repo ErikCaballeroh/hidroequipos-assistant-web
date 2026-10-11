@@ -1,47 +1,47 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ChatHeader from "@/features/chat/components/chat-header";
 import MessageInput from "@/features/chat/components/message-input";
 import MessageList from "@/features/chat/components/message-list";
 import QuickTemplatesSidebar from "@/features/chat/components/quick-templates-sidebar";
 import { useConversations } from "@/features/chat/hooks/use-conversations";
-import { getMessagesForConversation, useMessages } from "@/features/chat/hooks/use-messages";
+import { useMessages } from "@/features/chat/hooks/use-messages";
+import { useNewConversation } from "@/features/chat/hooks/use-new-conversation";
 import { useQueryTemplates } from "@/features/chat/hooks/use-query-templates";
 import { useSendMessage } from "@/features/chat/hooks/use-send-message";
-import { now } from "@/features/chat/lib/time";
-import type { ChatMessage } from "@/features/chat/types";
 
 function Chat() {
   const { conversations } = useConversations();
   const { templates } = useQueryTemplates();
-  const { messages: initialMessages } = useMessages();
+  const { createConversation } = useNewConversation();
   const { sendMessage, sending, error } = useSendMessage();
 
-  const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
+  const [activeConv, setActiveConv] = useState<string | null>(null);
   const [draft, setDraft] = useState("");
-  const [activeConv, setActiveConv] = useState("c1");
+  const { messages, isLoading: loadingMessages } = useMessages(activeConv);
+
+  const didAutoSelect = useRef(false);
+  useEffect(() => {
+    if (didAutoSelect.current || conversations.length === 0) return;
+    didAutoSelect.current = true;
+    if (!activeConv) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setActiveConv(conversations[0].id);
+    }
+  }, [activeConv, conversations]);
 
   const send = async (text: string) => {
     const t = text.trim();
     if (!t) return;
-    setMessages((m) => [
-      ...m,
-      { id: crypto.randomUUID(), role: "user", text: t, time: now() },
-    ]);
     setDraft("");
-    const reply = await sendMessage(t);
-    if (reply) setMessages((m) => [...m, reply]);
-  };
-
-  const newConversation = () => {
-    setMessages([]);
-    setActiveConv("");
-  };
-
-  const selectConversation = (id: string) => {
-    setActiveConv(id);
-    setMessages(getMessagesForConversation(id));
+    try {
+      const conversationId = activeConv ?? (await createConversation()).id;
+      if (conversationId !== activeConv) setActiveConv(conversationId);
+      await sendMessage(conversationId, t);
+    } catch {
+      // the error message is already surfaced via the hook's `error`
+    }
   };
 
   return (
@@ -51,11 +51,16 @@ function Chat() {
       <div className="flex min-w-0 flex-col">
         <ChatHeader
           conversations={conversations}
-          activeConversationId={activeConv}
-          onSelectConversation={selectConversation}
-          onNewConversation={newConversation}
+          activeConversationId={activeConv ?? ""}
+          onSelectConversation={setActiveConv}
+          onNewConversation={() => setActiveConv(null)}
         />
-        <MessageList messages={messages} thinking={sending} error={error} />
+        <MessageList
+          messages={messages}
+          thinking={sending}
+          error={error}
+          loading={loadingMessages}
+        />
         <MessageInput value={draft} onChange={setDraft} onSubmit={() => send(draft)} />
       </div>
     </div>

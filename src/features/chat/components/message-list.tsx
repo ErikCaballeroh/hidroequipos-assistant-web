@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { DropLogo } from "@/components/ui";
+import { DropLogo, Skeleton } from "@/components/ui";
 import MessageBubble from "./message-bubble";
 import ThinkingIndicator from "./thinking-indicator";
 import type { ChatMessage } from "../types";
@@ -10,10 +10,12 @@ export default function MessageList({
   messages,
   thinking,
   error,
+  loading,
 }: {
   messages: ChatMessage[];
   thinking: boolean;
   error?: string | null;
+  loading?: boolean;
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -23,6 +25,17 @@ export default function MessageList({
       behavior: "smooth",
     });
   }, [messages, thinking]);
+
+  if (loading && messages.length === 0) {
+    return (
+      <div className="flex-1 overflow-y-auto p-6">
+        <div className="mx-auto flex max-w-3xl flex-col gap-5">
+          <Skeleton className="h-14 w-2/3 self-end" />
+          <Skeleton className="h-20 w-3/4" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div ref={scrollRef} className="flex-1 overflow-y-auto p-6">
