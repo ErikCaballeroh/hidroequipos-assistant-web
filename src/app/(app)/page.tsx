@@ -48,7 +48,7 @@ function Chat() {
     <div className="grid h-full grid-cols-[280px_1fr]">
       <QuickTemplatesSidebar templates={templates} onSelect={setDraft} />
 
-      <div className="flex min-w-0 flex-col">
+      <div className="flex h-full min-h-0 min-w-0 flex-col">
         <ChatHeader
           conversations={conversations}
           activeConversationId={activeConv ?? ""}
