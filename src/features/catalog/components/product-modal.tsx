@@ -1,32 +1,39 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Field, Input, Modal, Select, Textarea } from "@/components/ui";
+import { Button, Field, Input, Modal, Textarea } from "@/components/ui";
 import type { Product } from "../types";
+
+export type ProductFormValues = {
+  name: string;
+  description: string;
+  category: string;
+  price: number;
+  stock: number;
+};
 
 export default function ProductModal({
   product,
   categories,
   onClose,
   onSave,
+  loading,
+  error,
 }: {
   product: Product | null;
   categories: string[];
   onClose: () => void;
-  onSave: (product: Product) => void;
+  onSave: (values: ProductFormValues) => void;
+  loading: boolean;
+  error: string | null;
 }) {
-  const [form, setForm] = useState<Product>(
-    () =>
-      product ?? {
-        sku: `NEW-${Math.floor(Math.random() * 900 + 100)}`,
-        name: "",
-        description: "",
-        category: categories[0],
-        price: 0,
-        stock: 0,
-        active: true,
-      },
-  );
+  const [form, setForm] = useState<ProductFormValues>(() => ({
+    name: product?.name ?? "",
+    description: product?.description ?? "",
+    category: product?.category ?? categories[0] ?? "",
+    price: product?.price ?? 0,
+    stock: product?.stock ?? 0,
+  }));
 
   return (
     <Modal
@@ -37,8 +44,8 @@ export default function ProductModal({
           <Button variant="secondary" onClick={onClose}>
             Cancelar
           </Button>
-          <Button onClick={() => onSave(form)} disabled={!form.name.trim()}>
-            Guardar
+          <Button onClick={() => onSave(form)} disabled={!form.name.trim() || loading}>
+            {loading ? "Guardando..." : "Guardar"}
           </Button>
         </>
       }
@@ -51,7 +58,10 @@ export default function ProductModal({
             placeholder="Cloro Granulado 5kg"
           />
         </Field>
-        <Field label="Descripción">
+        <Field
+          label="Descripción"
+          hint="Al guardar, se regenerará el índice de búsqueda de este producto. Puede tardar unos segundos."
+        >
           <Textarea
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
@@ -59,17 +69,17 @@ export default function ProductModal({
         </Field>
         <div className="grid grid-cols-3 gap-3">
           <Field label="Categoría">
-            <Select
+            <Input
+              list="product-categories"
               value={form.category}
-              onChange={(e) =>
-                setForm({ ...form, category: (e.target as HTMLSelectElement).value })
-              }
-              className="w-full"
-            >
+              onChange={(e) => setForm({ ...form, category: e.target.value })}
+              placeholder="Químicos"
+            />
+            <datalist id="product-categories">
               {categories.map((c) => (
-                <option key={c}>{c}</option>
+                <option key={c} value={c} />
               ))}
-            </Select>
+            </datalist>
           </Field>
           <Field label="Precio ($)">
             <Input
@@ -86,6 +96,7 @@ export default function ProductModal({
             />
           </Field>
         </div>
+        {error && <p className="text-sm text-danger">{error}</p>}
       </div>
     </Modal>
   );

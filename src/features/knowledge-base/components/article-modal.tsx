@@ -4,18 +4,33 @@ import { useState } from "react";
 import { Button, Field, Input, Modal, Textarea } from "@/components/ui";
 import type { Article } from "../types";
 
+export type ArticleFormValues = {
+  title: string;
+  description: string;
+};
+
 export default function ArticleModal({
   article,
   onClose,
   onSave,
+  onDelete,
+  loading,
+  deleting,
+  error,
 }: {
   article: Article | null;
   onClose: () => void;
-  onSave: (article: Article) => void;
+  onSave: (values: ArticleFormValues) => void;
+  onDelete?: () => void;
+  loading: boolean;
+  deleting: boolean;
+  error: string | null;
 }) {
-  const [form, setForm] = useState<Article>(
-    article ?? { id: crypto.randomUUID(), title: "", description: "" },
-  );
+  const [form, setForm] = useState<ArticleFormValues>({
+    title: article?.title ?? "",
+    description: article?.description ?? "",
+  });
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   return (
     <Modal
@@ -24,11 +39,30 @@ export default function ArticleModal({
       width="max-w-lg"
       footer={
         <>
+          {article && onDelete && !confirmingDelete && (
+            <Button
+              variant="danger"
+              className="mr-auto"
+              onClick={() => setConfirmingDelete(true)}
+            >
+              Eliminar
+            </Button>
+          )}
+          {confirmingDelete && (
+            <Button
+              variant="danger"
+              className="mr-auto"
+              onClick={onDelete}
+              disabled={deleting}
+            >
+              {deleting ? "Eliminando..." : "¿Confirmar eliminación?"}
+            </Button>
+          )}
           <Button variant="secondary" onClick={onClose}>
             Cancelar
           </Button>
-          <Button onClick={() => onSave(form)} disabled={!form.title.trim()}>
-            Guardar
+          <Button onClick={() => onSave(form)} disabled={!form.title.trim() || loading}>
+            {loading ? "Guardando..." : "Guardar"}
           </Button>
         </>
       }
@@ -43,7 +77,7 @@ export default function ArticleModal({
         </Field>
         <Field
           label="Descripción"
-          hint="Al guardar, se regenerará el índice de búsqueda para este artículo."
+          hint="Al guardar, se regenerará el índice de búsqueda para este artículo. Puede tardar unos segundos."
         >
           <Textarea
             className="min-h-40"
@@ -51,6 +85,7 @@ export default function ArticleModal({
             onChange={(e) => setForm({ ...form, description: e.target.value })}
           />
         </Field>
+        {error && <p className="text-sm text-danger">{error}</p>}
       </div>
     </Modal>
   );

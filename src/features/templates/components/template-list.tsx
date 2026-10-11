@@ -12,7 +12,7 @@ export default function TemplateList({
 }: {
   templates: QueryTemplate[];
   onReorder: (from: number, to: number) => void;
-  onToggleActive: (id: string) => void;
+  onToggleActive: (template: QueryTemplate) => void;
   onEdit: (template: QueryTemplate) => void;
 }) {
   const [dragIndex, setDragIndex] = useState<number | null>(null);
@@ -40,7 +40,7 @@ export default function TemplateList({
             <Icon name="drag" size={16} />
           </span>
           <span className="flex-1 text-sm text-ink">{t.title}</span>
-          <Toggle checked={t.active} onChange={() => onToggleActive(t.id)} />
+          <Toggle checked={t.active} onChange={() => onToggleActive(t)} />
           <button
             onClick={() => onEdit(t)}
             className="text-slate transition-colors hover:text-primary"
