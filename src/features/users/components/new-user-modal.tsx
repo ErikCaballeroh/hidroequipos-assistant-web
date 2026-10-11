@@ -2,21 +2,31 @@
 
 import { useState } from "react";
 import { Button, Field, Input, Modal, Select } from "@/components/ui";
-import type { User } from "../types";
+import type { CreateUserInput } from "../types";
+
+function genPassword() {
+  const chars = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789#$";
+  return Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join(
+    "",
+  );
+}
 
 export default function NewUserModal({
   onClose,
   onCreate,
+  loading,
+  error,
 }: {
   onClose: () => void;
-  onCreate: (user: User) => void;
+  onCreate: (input: CreateUserInput) => void;
+  loading: boolean;
+  error: string | null;
 }) {
-  const [form, setForm] = useState<User>({
-    id: crypto.randomUUID(),
+  const [form, setForm] = useState<CreateUserInput>({
     name: "",
     email: "",
-    role: "empleado",
-    active: true,
+    password: genPassword(),
+    role: "employee",
   });
 
   return (
@@ -30,9 +40,9 @@ export default function NewUserModal({
           </Button>
           <Button
             onClick={() => onCreate(form)}
-            disabled={!form.name.trim() || !form.email.trim()}
+            disabled={!form.name.trim() || !form.email.trim() || !form.password.trim() || loading}
           >
-            Crear
+            {loading ? "Creando..." : "Crear"}
           </Button>
         </>
       }
@@ -59,14 +69,30 @@ export default function NewUserModal({
             onChange={(e) =>
               setForm({
                 ...form,
-                role: (e.target as HTMLSelectElement).value as User["role"],
+                role: (e.target as HTMLSelectElement).value as CreateUserInput["role"],
               })
             }
           >
-            <option value="empleado">Empleado</option>
+            <option value="employee">Empleado</option>
             <option value="supervisor">Supervisor</option>
           </Select>
         </Field>
+        <Field label="Contraseña temporal" hint="Entrégasela al empleado para su primer acceso.">
+          <div className="flex items-center gap-2">
+            <Input
+              value={form.password}
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
+            />
+            <Button
+              variant="secondary"
+              type="button"
+              onClick={() => setForm({ ...form, password: genPassword() })}
+            >
+              Generar
+            </Button>
+          </div>
+        </Field>
+        {error && <p className="text-sm text-danger">{error}</p>}
       </div>
     </Modal>
   );

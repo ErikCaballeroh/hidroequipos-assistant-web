@@ -1,5 +1,6 @@
 import { EmptyState, LinkButton, StatusBadge, Toggle } from "@/components/ui";
 import { Td, Th } from "@/components/ui/table";
+import { roleLabel } from "../mappers";
 import type { User } from "../types";
 
 export default function UserTable({
@@ -9,7 +10,7 @@ export default function UserTable({
 }: {
   users: User[];
   onResetPassword: (user: User) => void;
-  onToggleActive: (id: string) => void;
+  onToggleActive: (user: User) => void;
 }) {
   if (users.length === 0) {
     return <EmptyState title="No hay usuarios registrados." />;
@@ -34,7 +35,7 @@ export default function UserTable({
           >
             <Td className="text-ink">{u.name}</Td>
             <Td className="text-slate">{u.email}</Td>
-            <Td className="capitalize text-slate">{u.role}</Td>
+            <Td className="text-slate">{roleLabel(u.role)}</Td>
             <Td>
               <StatusBadge active={u.active} />
             </Td>
@@ -43,7 +44,7 @@ export default function UserTable({
                 <LinkButton onClick={() => onResetPassword(u)}>
                   Resetear contraseña
                 </LinkButton>
-                <Toggle checked={u.active} onChange={() => onToggleActive(u.id)} />
+                <Toggle checked={u.active} onChange={() => onToggleActive(u)} />
               </div>
             </Td>
           </tr>

@@ -1,29 +1,37 @@
 "use client";
 
-import { useState } from "react";
-import { users as seed } from "../mocks/users";
-import type { User } from "../types";
-
-function genPassword() {
-  const chars = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789#$";
-  return Array.from(
-    { length: 8 },
-    () => chars[Math.floor(Math.random() * chars.length)],
-  ).join("");
-}
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type { ApiError } from "@/lib/api/errors";
+import { createUser, getUsers, updateUser } from "../api/users";
+import type { CreateUserInput, User } from "../types";
 
 export function useUsers() {
-  const [users, setUsers] = useState<User[]>(seed);
+  const queryClient = useQueryClient();
 
-  const createUser = (user: User) => {
-    setUsers((u) => [...u, user]);
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["users"],
+    queryFn: getUsers,
+  });
+
+  const invalidate = () => queryClient.invalidateQueries({ queryKey: ["users"] });
+
+  const createMutation = useMutation<void, ApiError, CreateUserInput>({
+    mutationFn: createUser,
+    onSuccess: invalidate,
+  });
+
+  const toggleActiveMutation = useMutation<void, ApiError, User>({
+    mutationFn: (user) => updateUser(user.id, { active: !user.active }),
+    onSuccess: invalidate,
+  });
+
+  return {
+    users: data?.items ?? [],
+    isLoading,
+    isError,
+    createUser: createMutation.mutateAsync,
+    isCreating: createMutation.isPending,
+    createError: createMutation.error?.message ?? null,
+    toggleActive: toggleActiveMutation.mutate,
   };
-
-  const toggleActive = (id: string) => {
-    setUsers((u) => u.map((x) => (x.id === id ? { ...x, active: !x.active } : x)));
-  };
-
-  const resetPassword = () => genPassword();
-
-  return { users, createUser, toggleActive, resetPassword };
 }
