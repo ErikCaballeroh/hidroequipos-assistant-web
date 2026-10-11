@@ -214,6 +214,17 @@ export function Modal({
   );
 }
 
+/* -------------------------------- Card ---------------------------------- */
+
+export function Card({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <section className="rounded-[4px] border border-line p-4">
+      <h2 className="font-display pb-3 text-sm text-ink">{title}</h2>
+      {children}
+    </section>
+  );
+}
+
 /* ------------------------------ Skeleton ------------------------------- */
 
 export function Skeleton({ className = "" }: { className?: string }) {

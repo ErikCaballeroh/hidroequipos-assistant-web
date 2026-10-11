@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import PageHeader from "@/components/PageHeader";
+import PageHeader from "@/components/layout/page-header";
 import { Button, Field, Icon, Input, Modal, Textarea, Toggle } from "@/components/ui";
 import { templates as seed, type Template } from "@/lib/data";
 

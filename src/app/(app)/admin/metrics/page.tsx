@@ -1,17 +1,7 @@
-import type { ReactNode } from "react";
-import PageHeader from "@/components/PageHeader";
-import { Icon } from "@/components/ui";
-import { Td, Th } from "@/components/table";
+import PageHeader from "@/components/layout/page-header";
+import { Card, Icon } from "@/components/ui";
+import { Td, Th } from "@/components/ui/table";
 import { apiHealth, failedMessages, topProducts } from "@/lib/data";
-
-function Panel({ title, children }: { title: string; children: ReactNode }) {
-  return (
-    <section className="rounded-[4px] border border-line p-4">
-      <h2 className="font-display pb-3 text-sm text-ink">{title}</h2>
-      {children}
-    </section>
-  );
-}
 
 export default function MetricsPage() {
   const max = Math.max(...topProducts.map((p) => p.value));
@@ -24,7 +14,7 @@ export default function MetricsPage() {
       <div className="flex-1 overflow-auto p-6">
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           {/* Top products */}
-          <Panel title="Productos más recomendados">
+          <Card title="Productos más recomendados">
             <div className="flex flex-col gap-3">
               {topProducts.map((p) => (
                 <div key={p.name} className="flex items-center gap-3">
@@ -43,10 +33,10 @@ export default function MetricsPage() {
                 </div>
               ))}
             </div>
-          </Panel>
+          </Card>
 
           {/* Feedback */}
-          <Panel title="Feedback de empleados">
+          <Card title="Feedback de empleados">
             <p className="font-display flex items-center gap-2 text-4xl font-medium text-primary">
               {approval}%
               <Icon name="thumbsUp" size={28} className="text-primary" />
@@ -60,10 +50,10 @@ export default function MetricsPage() {
                 style={{ width: `${approval}%` }}
               />
             </div>
-          </Panel>
+          </Card>
 
           {/* Failed matches */}
-          <Panel title="Mensajes sin match suficiente">
+          <Card title="Mensajes sin match suficiente">
             <p className="font-display text-4xl font-medium text-ink">12</p>
             <ul className="mt-3 flex flex-col gap-2">
               {failedMessages.map((m, i) => (
@@ -75,10 +65,10 @@ export default function MetricsPage() {
                 </li>
               ))}
             </ul>
-          </Panel>
+          </Card>
 
           {/* API health */}
-          <Panel title="Salud de la API">
+          <Card title="Salud de la API">
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-subtle text-left text-xs font-medium text-slate">
@@ -106,7 +96,7 @@ export default function MetricsPage() {
                 ))}
               </tbody>
             </table>
-          </Panel>
+          </Card>
         </div>
       </div>
     </div>

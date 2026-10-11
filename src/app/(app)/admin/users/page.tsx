@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import PageHeader from "@/components/PageHeader";
+import PageHeader from "@/components/layout/page-header";
 import {
   Button,
   Field,
@@ -13,7 +13,7 @@ import {
   StatusBadge,
   Toggle,
 } from "@/components/ui";
-import { Td, Th } from "@/components/table";
+import { Td, Th } from "@/components/ui/table";
 import { users as seed, type User } from "@/lib/data";
 
 function genPassword() {
