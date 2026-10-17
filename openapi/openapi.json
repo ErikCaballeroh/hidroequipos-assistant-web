@@ -2394,6 +2394,9 @@
           "bestMatchDistance": {
             "type": "number",
             "nullable": true
+          },
+          "success": {
+            "type": "boolean"
           }
         },
         "required": [
@@ -2402,7 +2405,8 @@
           "question",
           "answerPreview",
           "feedback",
-          "bestMatchDistance"
+          "bestMatchDistance",
+          "success"
         ]
       },
       "MessagePageEntity": {

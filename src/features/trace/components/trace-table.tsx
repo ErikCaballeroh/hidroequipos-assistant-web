@@ -1,13 +1,14 @@
 import { EmptyState } from "@/components/ui";
 import { Td, Th } from "@/components/ui/table";
-import type { TraceSummary } from "../types";
+import { formatDate } from "../mappers";
+import type { MessageTraceItem } from "../types";
 
 export default function TraceTable({
   traces,
   onSelect,
 }: {
-  traces: TraceSummary[];
-  onSelect: (id: string) => void;
+  traces: MessageTraceItem[];
+  onSelect: (id: number) => void;
 }) {
   if (traces.length === 0) {
     return <EmptyState title="No hay respuestas registradas." />;
@@ -29,8 +30,8 @@ export default function TraceTable({
             onClick={() => onSelect(t.id)}
             className="cursor-pointer border-b border-line transition-colors hover:bg-subtle"
           >
-            <Td className="whitespace-nowrap text-slate">{t.date}</Td>
-            <Td className="max-w-md truncate text-ink">{t.question}</Td>
+            <Td className="whitespace-nowrap text-slate">{formatDate(t.createdAt)}</Td>
+            <Td className="max-w-md truncate text-ink">{t.question ?? "(sin pregunta)"}</Td>
             <Td>
               <span
                 className="font-medium"

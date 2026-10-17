@@ -1,18 +1,9 @@
-/* Cited source shape agreed with the backend: name + 0-1 similarity score. */
+import type { components } from "@/lib/api/schema";
+
 export type TraceSource = {
   name: string;
   similarity: number;
 };
 
-export type TraceSummary = {
-  id: string;
-  question: string;
-  date: string;
-  success: boolean;
-};
-
-export type TraceDetail = TraceSummary & {
-  answer: string;
-  products: TraceSource[];
-  articles: TraceSource[];
-};
+export type MessageTraceItem = components["schemas"]["MessageListItemEntity"];
+export type MessageTrace = components["schemas"]["MessageTraceEntity"];

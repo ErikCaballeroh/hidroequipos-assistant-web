@@ -1,17 +1,5 @@
-export type TopProduct = {
-  name: string;
-  value: number;
-};
+import type { components } from "@/lib/api/schema";
 
-export type Stats = {
-  topProducts: TopProduct[];
-  approval: number;
-  failedCount: number;
-  failedMessages: string[];
-};
-
-export type GeminiLogEntry = {
-  time: string;
-  ok: boolean;
-  ms: number;
-};
+export type TopProduct = components["schemas"]["TopProductEntity"];
+export type NoMatchRecentItem = components["schemas"]["NoMatchRecentItemEntity"];
+export type GeminiLogEntry = components["schemas"]["GeminiLogEntity"];
