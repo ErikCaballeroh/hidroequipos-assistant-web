@@ -3,16 +3,17 @@
 import { use } from "react";
 import { useRouter } from "next/navigation";
 import PageHeader from "@/components/layout/page-header";
-import { Button, EmptyState, Icon } from "@/components/ui";
+import { Button, EmptyState, ErrorState, Icon, Skeleton } from "@/components/ui";
 import TraceSources from "@/features/trace/components/trace-sources";
 import { useTrace } from "@/features/trace/hooks/use-trace";
+import { toKnowledgeSources } from "@/features/trace/mappers";
 
 export default function MessageTraceabilityPage(
   props: PageProps<"/admin/messages/[id]">,
 ) {
   const { id } = use(props.params);
   const router = useRouter();
-  const { trace } = useTrace(id);
+  const { trace, isLoading, isError } = useTrace(id);
 
   return (
     <div className="flex h-full flex-col">
@@ -27,7 +28,17 @@ export default function MessageTraceabilityPage(
       />
 
       <div className="flex-1 overflow-auto p-6">
-        {!trace ? (
+        {isLoading ? (
+          <div className="mx-auto flex max-w-3xl flex-col gap-4">
+            <Skeleton className="h-24 w-full" />
+            <Skeleton className="h-32 w-full" />
+          </div>
+        ) : isError ? (
+          <ErrorState
+            title="No se pudo cargar la traza de esta respuesta."
+            onRetry={() => window.location.reload()}
+          />
+        ) : !trace ? (
           <EmptyState title="No se encontró la traza de esta respuesta." />
         ) : (
           <div className="mx-auto flex max-w-3xl flex-col gap-6">
@@ -36,7 +47,7 @@ export default function MessageTraceabilityPage(
                 Respuesta del asistente
               </p>
               <div className="rounded-[4px] border border-line p-4 text-sm text-ink">
-                {trace.answer}
+                {trace.message.content}
               </div>
             </div>
 
@@ -44,7 +55,7 @@ export default function MessageTraceabilityPage(
               <TraceSources title="Productos citados" sources={trace.products} />
               <TraceSources
                 title="Artículos de conocimiento citados"
-                sources={trace.articles}
+                sources={toKnowledgeSources(trace.knowledge)}
               />
             </div>
           </div>

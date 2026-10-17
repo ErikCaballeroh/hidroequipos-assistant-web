@@ -584,6 +584,7 @@ export interface components {
             /** @enum {string|null} */
             feedback: "like" | "dislike" | null;
             bestMatchDistance: number | null;
+            success: boolean;
         };
         MessagePageEntity: {
             items: components["schemas"]["MessageListItemEntity"][];
