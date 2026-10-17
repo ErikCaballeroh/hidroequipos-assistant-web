@@ -1,7 +1,13 @@
 "use client";
 
-import { stats } from "../mocks/stats";
+import { useQuery } from "@tanstack/react-query";
+import { getStats } from "../api/metrics";
 
 export function useStats() {
-  return { stats };
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["admin-stats"],
+    queryFn: () => getStats(),
+  });
+
+  return { stats: data, isLoading, isError };
 }

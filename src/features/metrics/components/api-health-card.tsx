@@ -1,8 +1,17 @@
-import { Card } from "@/components/ui";
+import { Card, EmptyState } from "@/components/ui";
 import { Td, Th } from "@/components/ui/table";
+import { formatDateTime } from "../mappers";
 import type { GeminiLogEntry } from "../types";
 
 export default function ApiHealthCard({ logs }: { logs: GeminiLogEntry[] }) {
+  if (logs.length === 0) {
+    return (
+      <Card title="Salud de la API">
+        <EmptyState title="Sin llamadas registradas en este periodo." />
+      </Card>
+    );
+  }
+
   return (
     <Card title="Salud de la API">
       <table className="w-full text-sm">
@@ -14,18 +23,20 @@ export default function ApiHealthCard({ logs }: { logs: GeminiLogEntry[] }) {
           </tr>
         </thead>
         <tbody>
-          {logs.map((r, i) => (
-            <tr key={i} className="border-b border-line last:border-0">
-              <Td className="text-slate">{r.time}</Td>
+          {logs.map((r) => (
+            <tr key={r.id} className="border-b border-line last:border-0">
+              <Td className="text-slate">{formatDateTime(r.createdAt)}</Td>
               <Td>
                 <span
-                  style={{ color: r.ok ? "#00a8c8" : "#e53e3e" }}
+                  style={{ color: r.success ? "#00a8c8" : "#e53e3e" }}
                   className="font-medium"
                 >
-                  {r.ok ? "Éxito" : "Error"}
+                  {r.success ? "Éxito" : "Error"}
                 </span>
               </Td>
-              <Td className="text-right tabular-nums text-ink">{r.ms} ms</Td>
+              <Td className="text-right tabular-nums text-ink">
+                {r.responseTimeMs != null ? `${r.responseTimeMs} ms` : "—"}
+              </Td>
             </tr>
           ))}
         </tbody>
