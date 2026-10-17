@@ -2,7 +2,9 @@
 
 # CLAUDE.md — hidroequipos-assistant-web
 
-Frontend del asistente de diagnóstico y mantenimiento de albercas de **Hidroequipos y Albercas**. Herramienta interna: los empleados usan el chat y los supervisores administran catálogo, base de conocimiento, plantillas, usuarios y métricas. El backend vive en otro repositorio (`hidroequipos-assistant-api`).
+Frontend del asistente de diagnóstico y mantenimiento de albercas de **Hidroequipos y Albercas**. Herramienta interna: los empleados usan el chat y los supervisores administran catálogo, base de conocimiento, plantillas, usuarios, métricas y trazabilidad. El backend vive en otro repositorio (`hidroequipos-assistant-api`).
+
+Todas las pantallas ya están integradas contra el backend real; no quedan `mocks/` en el proyecto. Si se agrega una pantalla nueva antes de que exista su endpoint, se puede volver a usar temporalmente el patrón `mocks/` descrito abajo (el hook devuelve el mock hasta que el endpoint exista), pero debe eliminarse en cuanto se conecte a la API real.
 
 Antes de escribir código de Next.js, sigue las instrucciones de `AGENTS.md`: esta versión de Next.js puede diferir de lo que conoces, así que consulta la documentación instalada en `node_modules/next/dist/docs/` y no asumas APIs de versiones anteriores.
 
