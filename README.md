@@ -21,6 +21,7 @@ pnpm dev
 - `pnpm dev` — desarrollo (puerto 3000)
 - `pnpm build` — build de producción; debe pasar antes de cada PR
 - `pnpm lint` — linter; debe pasar antes de cada PR
+- `pnpm test` — pruebas unitarias con Vitest; debe pasar antes de cada PR
 - `pnpm api:sync` — descarga el OpenAPI del backend (debe estar corriendo) y regenera `src/lib/api/schema.d.ts`
 
 ## Convenciones y arquitectura

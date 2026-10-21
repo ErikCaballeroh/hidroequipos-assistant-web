@@ -22,6 +22,7 @@ Antes de escribir código de Next.js, sigue las instrucciones de `AGENTS.md`: es
 - `pnpm dev` — desarrollo (puerto 3000)
 - `pnpm build` — compila; debe pasar antes de cada PR
 - `pnpm lint` — linter; debe pasar antes de cada PR
+- `pnpm test` — pruebas unitarias con Vitest; debe pasar antes de cada PR
 - `pnpm api:sync` — descarga el OpenAPI del backend y regenera los tipos (se agrega en la fase de infraestructura)
 
 Variable de entorno (ver `.env.example`):
@@ -94,11 +95,18 @@ src/
 - El ranking de productos de Métricas son los **más consultados** (lo que recuperó la búsqueda), no necesariamente los que el modelo recomendó. Etiquétalo así.
 - Un "mensaje sin match suficiente" es una respuesta sin contexto suficiente en el catálogo ni en la base de conocimiento.
 
+## Pruebas
+
+- Vitest + `@testing-library/react` (entorno `jsdom`), configurado en `vitest.config.mts`. Los archivos de prueba van junto al código (`archivo.test.ts`/`.tsx`), no en una carpeta `__tests__/` aparte.
+- Funciones puras (`mappers.ts`, `lib/api/errors.ts`) se prueban directo, sin mocks.
+- Los hooks que llaman a la API se prueban con MSW (`src/test/msw/`), que intercepta las peticiones HTTP reales en vez de reemplazar `apiClient`. `src/test/setup.ts` arranca el servidor MSW para todas las pruebas y fuerza el adaptador `fetch` de Axios (el adaptador `xhr` de jsdom no lo intercepta MSW de forma confiable); esto es solo para pruebas, no afecta `lib/api/client.ts`.
+- `src/test/query-client.tsx` trae un `createWrapper()` para `renderHook` con su propio `QueryClient` por prueba.
+
 ## Convenciones de trabajo
 
 - Conventional Commits (`feat:`, `fix:`, `refactor:`, `chore:`).
 - Ramas descriptivas por fase (`refactor/chat-feature`, `feat/auth-integration`) y un PR por fase.
-- Antes de cada PR: `pnpm lint` y `pnpm build` sin errores.
+- Antes de cada PR: `pnpm lint`, `pnpm test` y `pnpm build` sin errores.
 - En los refactors, la pantalla debe verse igual que antes. Compara contra `figma-prototipe/` y el estado previo.
 - Cada interfaz de datos debe cubrir cuatro estados: carga, vacío, error y contenido.
 
