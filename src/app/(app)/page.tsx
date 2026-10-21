@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import ChatHeader from "@/features/chat/components/chat-header";
 import MessageInput from "@/features/chat/components/message-input";
 import MessageList from "@/features/chat/components/message-list";
-import QuickTemplatesSidebar from "@/features/chat/components/quick-templates-sidebar";
 import { useConversations } from "@/features/chat/hooks/use-conversations";
 import { useMessages } from "@/features/chat/hooks/use-messages";
 import { useNewConversation } from "@/features/chat/hooks/use-new-conversation";
@@ -45,25 +44,27 @@ function Chat() {
   };
 
   return (
-    <div className="grid h-full grid-cols-[280px_1fr]">
-      <QuickTemplatesSidebar templates={templates} onSelect={send} />
-
-      <div className="flex h-full min-h-0 min-w-0 flex-col">
-        <ChatHeader
-          conversations={conversations}
-          activeConversationId={activeConv ?? ""}
-          onSelectConversation={setActiveConv}
-          onNewConversation={() => setActiveConv(null)}
-        />
-        <MessageList
-          messages={messages}
-          thinking={sending}
-          error={error}
-          loading={loadingMessages}
-          conversationId={activeConv}
-        />
-        <MessageInput value={draft} onChange={setDraft} onSubmit={() => send(draft)} />
-      </div>
+    <div className="flex h-full min-h-0 min-w-0 flex-col">
+      <ChatHeader
+        conversations={conversations}
+        activeConversationId={activeConv ?? ""}
+        onSelectConversation={setActiveConv}
+        onNewConversation={() => setActiveConv(null)}
+      />
+      <MessageList
+        messages={messages}
+        thinking={sending}
+        error={error}
+        loading={loadingMessages}
+        conversationId={activeConv}
+      />
+      <MessageInput
+        value={draft}
+        onChange={setDraft}
+        onSubmit={() => send(draft)}
+        templates={templates}
+        onSelectTemplate={send}
+      />
     </div>
   );
 }
