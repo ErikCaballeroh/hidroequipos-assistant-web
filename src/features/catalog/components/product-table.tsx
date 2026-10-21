@@ -12,7 +12,16 @@ export default function ProductTable({
   onToggleActive: (product: Product) => void;
 }) {
   return (
-    <table className="w-full text-sm">
+    <table className="w-full table-fixed text-sm">
+      <colgroup>
+        <col className="w-24" />
+        <col />
+        <col className="w-32" />
+        <col className="w-24" />
+        <col className="w-20" />
+        <col className="w-24" />
+        <col className="w-24" />
+      </colgroup>
       <thead>
         <tr className="bg-subtle text-left text-xs font-medium text-slate">
           <Th>SKU</Th>
@@ -30,9 +39,9 @@ export default function ProductTable({
             key={p.id}
             className="border-b border-line transition-colors hover:bg-subtle"
           >
-            <Td className="font-medium text-slate">{p.sku ?? "—"}</Td>
-            <Td className="text-ink">{p.name}</Td>
-            <Td className="text-slate">{p.category ?? "—"}</Td>
+            <Td className="truncate font-medium text-slate">{p.sku ?? "—"}</Td>
+            <Td className="truncate text-ink">{p.name}</Td>
+            <Td className="truncate text-slate">{p.category ?? "—"}</Td>
             <Td className="text-right tabular-nums text-ink">
               {p.price != null ? `$${p.price.toLocaleString("es-MX")}` : "—"}
             </Td>
