@@ -13,7 +13,7 @@ export async function getMessages(
   const { data } = await apiClient.get<MessagePage>("/admin/messages", {
     params: {
       page: 1,
-      pageSize: 50,
+      pageSize: 15,
       ...params,
       ...(filter === "noMatch" ? { noMatch: true } : {}),
       ...(filter === "dislike" ? { feedback: "dislike" } : {}),

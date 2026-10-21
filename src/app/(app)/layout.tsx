@@ -54,7 +54,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="grid h-full grid-cols-[220px_1fr]">
+    <div className="grid h-full grid-cols-[220px_1fr] grid-rows-[minmax(0,1fr)]">
       <Sidebar user={user} onLogout={logout} />
       <main className="min-w-0 overflow-hidden bg-white">{children}</main>
     </div>
