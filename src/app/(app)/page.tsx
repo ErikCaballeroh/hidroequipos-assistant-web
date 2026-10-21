@@ -46,7 +46,7 @@ function Chat() {
 
   return (
     <div className="grid h-full grid-cols-[280px_1fr]">
-      <QuickTemplatesSidebar templates={templates} onSelect={setDraft} />
+      <QuickTemplatesSidebar templates={templates} onSelect={send} />
 
       <div className="flex h-full min-h-0 min-w-0 flex-col">
         <ChatHeader

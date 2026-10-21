@@ -57,7 +57,7 @@ export default function MessageList({
           ))}
           {thinking && (
             <div className="flex flex-col items-start">
-              <div className="rounded-[4px] rounded-l-none border border-l-[3px] border-line border-l-secondary bg-subtle px-3.5 py-3">
+              <div className="rounded-[4px] bg-subtle px-3.5 py-3">
                 <ThinkingIndicator />
               </div>
             </div>
