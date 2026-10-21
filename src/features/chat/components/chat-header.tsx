@@ -22,16 +22,18 @@ export default function ChatHeader({
         </span>
       </div>
 
-      <ConversationHistory
-        conversations={conversations}
-        activeId={activeConversationId}
-        onSelect={onSelectConversation}
-      />
+      <div className="flex items-center gap-2">
+        <ConversationHistory
+          conversations={conversations}
+          activeId={activeConversationId}
+          onSelect={onSelectConversation}
+        />
 
-      <Button onClick={onNewConversation}>
-        <Icon name="plus" size={16} />
-        Nuevo
-      </Button>
+        <Button onClick={onNewConversation}>
+          <Icon name="plus" size={16} />
+          Nuevo
+        </Button>
+      </div>
     </header>
   );
 }
