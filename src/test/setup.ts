@@ -9,6 +9,9 @@ beforeAll(() => {
   // MSW does intercept the fetch adapter correctly, so force it for tests only.
   apiClient.defaults.adapter = "fetch";
   server.listen({ onUnhandledFrame: "error" });
+
+  // jsdom doesn't implement Element.prototype.scrollTo at all.
+  Element.prototype.scrollTo = () => {};
 });
 afterEach(() => {
   server.resetHandlers();

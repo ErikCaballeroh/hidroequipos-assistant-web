@@ -8,6 +8,7 @@ type MessagePage = components["schemas"]["MessagePageEntity"];
 type ProductPage = components["schemas"]["ProductPageEntity"];
 type Product = components["schemas"]["ProductEntity"];
 type SendMessageResponse = components["schemas"]["SendMessageResponseEntity"];
+type LoginResponse = components["schemas"]["LoginResponseDto"];
 
 export const stats: Stats = {
   topProducts: [{ productId: 1, sku: "QUI-003", name: "Alguicida 10L", count: 17 }],
@@ -55,6 +56,11 @@ export const productPage: ProductPage = {
   total: 1,
 };
 
+export const loginResponse: LoginResponse = {
+  accessToken: "test-access-token",
+  mustChangePassword: false,
+};
+
 export const sendMessageResponse: SendMessageResponse = {
   message: {
     id: 2,
@@ -70,6 +76,7 @@ export const sendMessageResponse: SendMessageResponse = {
 };
 
 export const handlers = [
+  http.post(`${API_URL}/auth/login`, () => HttpResponse.json(loginResponse)),
   http.get(`${API_URL}/admin/stats`, () => HttpResponse.json(stats)),
   http.get(`${API_URL}/admin/messages`, () => HttpResponse.json(messagePage)),
   http.get(`${API_URL}/products`, () => HttpResponse.json(productPage)),
