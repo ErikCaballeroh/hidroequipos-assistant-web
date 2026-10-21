@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import PageHeader from "@/components/layout/page-header";
 import { Button, EmptyState, ErrorState, Icon } from "@/components/ui";
+import { Pagination } from "@/components/ui/pagination";
 import { TableSkeleton } from "@/components/ui/table";
 import ProductFilters from "@/features/catalog/components/product-filters";
 import ProductModal from "@/features/catalog/components/product-modal";
@@ -26,6 +27,8 @@ export default function CatalogPage() {
   const [cat, setCat] = useState("Todas");
   const [editing, setEditing] = useState<Product | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const pageSize = 20;
 
   const filtered = useMemo(
     () =>
@@ -37,6 +40,17 @@ export default function CatalogPage() {
       ),
     [products, query, cat],
   );
+
+  const paged = filtered.slice((page - 1) * pageSize, page * pageSize);
+
+  const changeQuery = (value: string) => {
+    setQuery(value);
+    setPage(1);
+  };
+  const changeCategory = (value: string) => {
+    setCat(value);
+    setPage(1);
+  };
 
   const openNew = () => {
     setEditing(null);
@@ -61,10 +75,10 @@ export default function CatalogPage() {
 
       <ProductFilters
         query={query}
-        onQueryChange={setQuery}
+        onQueryChange={changeQuery}
         category={cat}
         categories={categories}
-        onCategoryChange={setCat}
+        onCategoryChange={changeCategory}
       />
 
       <div className="flex-1 overflow-auto px-6 py-4">
@@ -86,9 +100,13 @@ export default function CatalogPage() {
             }
           />
         ) : (
-          <ProductTable products={filtered} onEdit={openEdit} onToggleActive={toggleActive} />
+          <ProductTable products={paged} onEdit={openEdit} onToggleActive={toggleActive} />
         )}
       </div>
+
+      {!isLoading && !isError && filtered.length > 0 && (
+        <Pagination page={page} pageSize={pageSize} total={filtered.length} onPageChange={setPage} />
+      )}
 
       {modalOpen && (
         <ProductModal

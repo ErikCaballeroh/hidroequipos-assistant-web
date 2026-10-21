@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import PageHeader from "@/components/layout/page-header";
 import { Button, ErrorState, Skeleton } from "@/components/ui";
+import { Pagination } from "@/components/ui/pagination";
 import TraceTable from "@/features/trace/components/trace-table";
 import { useTraceList } from "@/features/trace/hooks/use-trace-list";
 import type { MessagesFilter } from "@/features/trace/api/trace";
@@ -17,7 +18,13 @@ const FILTERS: { value: MessagesFilter; label: string }[] = [
 export default function MessagesTraceListPage() {
   const router = useRouter();
   const [filter, setFilter] = useState<MessagesFilter>("all");
-  const { traces, isLoading, isError } = useTraceList(filter);
+  const [page, setPage] = useState(1);
+  const { traces, pageSize, total, isLoading, isError } = useTraceList(filter, page);
+
+  const changeFilter = (value: MessagesFilter) => {
+    setFilter(value);
+    setPage(1);
+  };
 
   return (
     <div className="flex h-full flex-col">
@@ -28,7 +35,7 @@ export default function MessagesTraceListPage() {
           <Button
             key={f.value}
             variant={filter === f.value ? "primary" : "secondary"}
-            onClick={() => setFilter(f.value)}
+            onClick={() => changeFilter(f.value)}
           >
             {f.label}
           </Button>
@@ -54,6 +61,10 @@ export default function MessagesTraceListPage() {
           />
         )}
       </div>
+
+      {!isLoading && !isError && (
+        <Pagination page={page} pageSize={pageSize} total={total} onPageChange={setPage} />
+      )}
     </div>
   );
 }
