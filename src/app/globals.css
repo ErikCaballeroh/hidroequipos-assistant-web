@@ -38,6 +38,10 @@ body {
   letter-spacing: -0.02em;
 }
 
+button:not(:disabled) {
+  cursor: pointer;
+}
+
 /* Hide scrollbars until scrolling */
 * {
   scrollbar-width: thin;
