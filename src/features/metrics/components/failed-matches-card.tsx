@@ -12,7 +12,7 @@ export default function FailedMatchesCard({
   return (
     <Card title="Mensajes sin match suficiente">
       <p className="font-display text-4xl font-medium text-ink">{count}</p>
-      <ul className="mt-3 flex flex-col gap-2">
+      <ul className="mt-3 flex max-h-72 flex-col gap-2 overflow-y-auto">
         {items.map((item) => (
           <li key={item.messageId}>
             <Link

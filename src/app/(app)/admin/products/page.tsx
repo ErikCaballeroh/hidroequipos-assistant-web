@@ -28,7 +28,7 @@ export default function CatalogPage() {
   const [editing, setEditing] = useState<Product | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [page, setPage] = useState(1);
-  const pageSize = 20;
+  const pageSize = 15;
 
   const filtered = useMemo(
     () =>

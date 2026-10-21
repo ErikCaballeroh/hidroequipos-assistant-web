@@ -12,7 +12,7 @@ export function useTraceList(filter: MessagesFilter = "all", page: number = 1) {
   return {
     traces: data?.items ?? [],
     page: data?.page ?? page,
-    pageSize: data?.pageSize ?? 20,
+    pageSize: data?.pageSize ?? 15,
     total: data?.total ?? 0,
     isLoading,
     isError,
