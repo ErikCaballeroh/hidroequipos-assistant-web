@@ -13,7 +13,7 @@ export default function LoginForm({
   loading: boolean;
   error: string | null;
 }) {
-  const [email, setEmail] = useState("maria.fernandez@hidroequipos.mx");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const submit = (e: React.FormEvent) => {
