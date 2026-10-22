@@ -73,13 +73,6 @@ export default function LoginForm({
             <Button type="submit" disabled={loading} className="w-full">
               Iniciar sesión
             </Button>
-
-            <button
-              type="button"
-              className="mx-auto text-[13px] text-slate transition-colors hover:text-primary"
-            >
-              ¿Olvidaste tu contraseña?
-            </button>
           </div>
         </form>
       </div>
